@@ -27,8 +27,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <q-spinner v-if="loading" size="50px" color="primary" />
   </div>
 </q-page>
 </template>
