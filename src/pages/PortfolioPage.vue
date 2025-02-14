@@ -1,34 +1,52 @@
 <template>
-  <div class="portfolio-page">
+  <q-page class="q-pa-md">
     <div class="text-h3">My Projects</div>
     <q-separator spaced />
-    <q-page class="projects-grid">
+      <div class="projects-grid">
       <q-card v-for="project in projects" :key="project.id" class="project-card">
         <q-card-section>
-          <q-parallax
+          <q-img
             :src="project.image"
-            style="height: 250px"
-            :speed="5">
-            <div class="absolute-bottom q-pa-md text-white dimmed">
+            style="height: 250px">
+            <div class="absolute-bottom q-pa-md text-white bg-dimmed">
               <div class="text-h6">{{ project.title }}</div>
               <div class="text-subtitle2">{{ project.description }}</div>
+              <q-chip
+                v-for="(tag, index) in project.tags"
+                :key="index"
+                color="secondary"
+                text-color="white"
+                size="sm"
+              >
+                {{ tag }}
+              </q-chip>
             </div>
-          </q-parallax>
-
+          </q-img>
         </q-card-section>
 
-        <q-card-actions align="center">
-            <q-btn label="Explore" color="primary" @click="() => $router.push(project.link)" />
-          <q-btn v-if="project.source" :href="project.source" target="_blank" label="Source" color="accent" />
+        <q-card-actions align="center" >
+          <q-btn-group style="width: 90%">
+            <q-btn style="width: 90%" :disable="!project.link" label="Explore" color="primary" @click="navigateToProject(project.link)" />
+            <q-btn style="width: 90%" v-if="project.source" :href="project.source" target="_blank" label="Source" color="accent" />
+          </q-btn-group>
         </q-card-actions>
       </q-card>
-    </q-page>
-  </div>
+      </div>
+  </q-page>
+
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { QPage, QCard, QCardSection, QCardActions, QBtn } from 'quasar';
+const router = useRouter();
+
+function navigateToProject(link: string | null) {
+  if (link) {
+    router.push(link);
+  }
+};
 
 const projects = ref([
   {
@@ -36,48 +54,23 @@ const projects = ref([
     title: 'Particle life',
     image: 'projects/particle-life.png',
     description: 'A colourful cellular automata implemented using p5 js.',
-    link: '#/portfolio/particle-life',
+    tags: ['p5.js', 'cellular automata'],
+    link: '/portfolio/particle-life',
     source: 'https://github.com/mhawes/particle-life-p5'
   },
   {
     id: 2,
-    title: 'Project Two',
-    image: 'path/to/image2.jpg',
-    description: 'Description for project two.',
-    link: 'https://example.com/project-two',
-    source: 'https://example.com/project-one'
-  },
-  {
-    id: 3,
-    title: 'Project Two',
-    image: 'path/to/image2.jpg',
-    description: 'Description for project two.',
-    link: 'https://example.com/project-two',
-    source: 'https://example.com/project-one'
-  },
-  {
-    id: 4,
-    title: 'Project Two',
-    image: 'path/to/image2.jpg',
-    description: 'Description for project two.',
-    link: 'https://example.com/project-two',
-    source: 'https://example.com/project-one'
-  },
-  {
-    id: 5,
-    title: 'Project Two',
-    image: 'path/to/image2.jpg',
-    description: 'Description for project two.',
-    link: 'https://example.com/project-two'
+    title: 'Portfolio site',
+    image: 'projects/quasar.png',
+    description: 'The site you\'re looking at.',
+    tags: ['Vue 3', 'Quasar', 'TypeScript'],
+    link: '/',
+    source: 'https://github.com/mhawes/portfolio'
   },
 ]);
 </script>
 
 <style scoped>
-.portfolio-page {
-  padding: 20px;
-}
-
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
