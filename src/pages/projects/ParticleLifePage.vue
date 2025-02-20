@@ -2,6 +2,16 @@
   <q-page class="q-pa-md">
     <div ref="p5Container" style="width: 100%; height: 500px;"></div>
 
+    <div class="q-pa-xs">
+      <q-btn-group push >
+        <q-btn icon="circle" color="accent" @click="mouseColorIx = (mouseColorIx + 1) % availableColours.length" />
+        <q-btn icon="grid_on" color="accent" @click="showMatrix = !showMatrix" />
+        <q-btn icon="help" color="accent" @click="randomise()" />
+        <q-btn icon="auto_awesome" color="accent" @click="autoPopulate()" />
+        <q-btn icon="delete" color="accent" @click="clear()" />
+      </q-btn-group>
+    </div>
+
     <q-card>
       <q-card-section>
         <div class="text-h6">Particle Life</div>
@@ -52,7 +62,7 @@ let width = 1900;
 
 let surface: Surface;
 let mouseColorIx = 0;
-const availableColours = ['deeppink', 'yellow', 'blue', 'green', 'peach', 'orange', 'darkmagenta' ];
+const availableColours = ['deeppink', 'yellow', 'blue', 'green', 'orange', 'darkmagenta' ];
 let pauseSim = false;
 
 let showMatrix = false;
@@ -342,6 +352,24 @@ function drawAtomCursor() {
   sk?.circle(sk?.mouseX, sk?.mouseY, 6);
 }
 
+function randomise() {
+  surface.attractionMatrix.randomise();
+}
+
+function clear() {
+  surface.atoms = [];
+}
+
+function autoPopulate() {
+  clear();
+  const atomCount = Math.floor(Math.random() * 501) + 100;
+  for (let i = 0; i < atomCount; i++) {
+    const color = sk!.color(availableColours[Math.floor(Math.random() * availableColours.length)]);
+    const position = sk!.createVector(sk!.random(width), sk!.random(height));
+    surface.addAtom(color, position);
+  }
+}
+
 onMounted(() => {
   if (!p5Container.value) return;
 
@@ -358,6 +386,9 @@ onMounted(() => {
       for (let i = 0; i < availableColours.length; ++i) {
         surface.addAtoms(sketch.color(availableColours[i]), 0);
       }
+
+      randomise();
+      autoPopulate();
     };
 
     sketch.keyPressed = () => {
